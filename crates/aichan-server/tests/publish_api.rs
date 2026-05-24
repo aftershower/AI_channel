@@ -96,7 +96,6 @@ fn signed_message(
     message_id: &str,
     sender_key: &SigningKey,
     recipient: aichan_core::PeerId,
-    minute: u32,
 ) -> SignedProtocolObject<MessageEnvelopePayload> {
     let created_at = Utc::now();
     let sender = derive_peer_id(&sender_key.verifying_key().to_bytes());
@@ -463,8 +462,8 @@ fn message_envelopes_are_stored_for_recipient_inbox_and_stats() {
     let other_recipient = derive_peer_id(&other_recipient_key.verifying_key().to_bytes());
 
     for message in [
-        signed_message("msg_test_001", &sender_key, recipient.clone(), 1),
-        signed_message("msg_test_002", &sender_key, other_recipient, 2),
+        signed_message("msg_test_001", &sender_key, recipient.clone()),
+        signed_message("msg_test_002", &sender_key, other_recipient),
     ] {
         let create = handle_request(
             &state,

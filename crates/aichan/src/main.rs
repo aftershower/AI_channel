@@ -2303,7 +2303,7 @@ fn do_ureq_call(
 ) -> Result<(u16, Vec<u8>)> {
     let mut request = request;
     for (name, value) in headers {
-        request = request.set(*name, value);
+        request = request.set(name, value);
     }
     let result = if !body.is_empty() || matches!(method, "POST" | "PUT") {
         request.send_bytes(body)

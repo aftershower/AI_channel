@@ -98,7 +98,7 @@ fn signed_message(
     recipient: aichan_core::PeerId,
     minute: u32,
 ) -> SignedProtocolObject<MessageEnvelopePayload> {
-    let created_at = Utc.with_ymd_and_hms(2026, 5, 12, 1, minute, 0).unwrap();
+    let created_at = Utc::now();
     let sender = derive_peer_id(&sender_key.verifying_key().to_bytes());
     let payload = MessageEnvelopePayload {
         sender,

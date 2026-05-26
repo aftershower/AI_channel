@@ -1,8 +1,7 @@
 use std::io::Read;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command as ProcessCommand;
-use std::sync::Mutex;
-use std::sync::OnceLock;
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{Duration, Instant};
 use std::{cmp::Ordering, fs, io::Write};
 
@@ -2244,11 +2243,14 @@ fn relay_http_agent() -> Result<&'static ureq::Agent> {
         return Ok(agent);
     }
     let timeout = Duration::from_secs(effective_http_timeout());
+    let tls_connector =
+        ureq::native_tls::TlsConnector::new().context("build native TLS connector")?;
     let agent = ureq::AgentBuilder::new()
         .timeout_connect(timeout)
         .timeout_read(timeout)
         .timeout_write(timeout)
         .user_agent(&format!("aichan/{}", env!("CARGO_PKG_VERSION")))
+        .tls_connector(Arc::new(tls_connector))
         .build();
     let _ = RELAY_HTTP_AGENT.set(agent);
     Ok(RELAY_HTTP_AGENT
